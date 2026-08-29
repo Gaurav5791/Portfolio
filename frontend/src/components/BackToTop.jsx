@@ -4,11 +4,7 @@ export default function BackToTop() {
   const [isVisible, setIsVisible] = useState(false)
 
   const toggleVisibility = () => {
-    if (window.pageYOffset > 300) {
-      setIsVisible(true)
-    } else {
-      setIsVisible(false)
-    }
+    setIsVisible(window.pageYOffset > 300)
   }
 
   const scrollToTop = () => {
@@ -20,9 +16,7 @@ export default function BackToTop() {
 
   useEffect(() => {
     window.addEventListener('scroll', toggleVisibility)
-    return () => {
-      window.removeEventListener('scroll', toggleVisibility)
-    }
+    return () => window.removeEventListener('scroll', toggleVisibility)
   }, [])
 
   return (
@@ -30,10 +24,10 @@ export default function BackToTop() {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-40 w-12 h-12 bg-cyan-500 hover:bg-cyan-400 text-black font-bold flex items-center justify-center transition-all duration-300 transform hover:scale-110 animate-fadeIn"
+          className="fixed bottom-8 right-8 md:bottom-12 md:right-12 z-40 w-12 h-12 bg-black border border-cyan-400 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-black transition-all duration-300 transform hover:scale-110 font-bold text-lg"
           style={{
-            boxShadow: '0 0 20px rgba(0,255,255,0.8)',
-            animation: 'fadeIn 0.3s ease-in'
+            boxShadow: '0 0 15px rgba(0,255,255,0.6)',
+            animation: 'fadeInScale 0.3s ease-out'
           }}
           title="Back to top"
         >
@@ -42,14 +36,14 @@ export default function BackToTop() {
       )}
 
       <style>{`
-        @keyframes fadeIn {
+        @keyframes fadeInScale {
           from {
             opacity: 0;
-            transform: translateY(10px);
+            transform: scale(0.7);
           }
           to {
             opacity: 1;
-            transform: translateY(0);
+            transform: scale(1);
           }
         }
       `}</style>
