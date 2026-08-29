@@ -1,49 +1,106 @@
 import { useState, useEffect } from 'react'
+import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa'
+import { fetchPortfolioData } from '../api/api'
 
 export default function Hero() {
-  const [text, setText] = useState('')
-  const fullText = "Full Stack Developer | Python | React | Django"
-  const [index, setIndex] = useState(0)
+  const [personalInfo, setPersonalInfo] = useState(null)
+  const [displayedText, setDisplayedText] = useState('')
+  const [textIndex, setTextIndex] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
+
+  const typingTexts = [
+    'Full Stack Developer',
+    'AI & Data Science Enthusiast',
+    'Problem Solver',
+  ]
 
   useEffect(() => {
-    if (index < fullText.length) {
-      const timer = setTimeout(() => {
-        setText(fullText.slice(0, index + 1))
-        setIndex(index + 1)
-      }, 50)
-      return () => clearTimeout(timer)
-    }
-  }, [index, fullText])
+    fetchPortfolioData().then(data => {
+      setPersonalInfo(data)
+    })
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const currentText = typingTexts[textIndex]
+      if (charIndex < currentText.length) {
+        setDisplayedText(currentText.substring(0, charIndex + 1))
+        setCharIndex(charIndex + 1)
+      } else {
+        setTimeout(() => {
+          setTextIndex((textIndex + 1) % typingTexts.length)
+          setCharIndex(0)
+          setDisplayedText('')
+        }, 2000)
+      }
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [charIndex, textIndex])
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-2000"></div>
-      </div>
+    <section className="min-h-screen bg-black flex items-center justify-center relative overflow-hidden pt-20">
+      {/* Background Effects */}
+      <div className="absolute top-0 left-1/2 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 -translate-x-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
 
-      <div className="relative z-10 text-center px-4">
-        <h1 className="text-6xl md:text-7xl font-bold text-white mb-6">
-          Hi, I'm Gaurav
+      <div className="max-w-6xl mx-auto px-4 relative z-10 text-center">
+        {/* Main Title */}
+        <h1 className="text-6xl md:text-8xl font-black tracking-widest mb-4" style={{
+          color: '#00ffff',
+          textShadow: '0 0 20px rgba(0,255,255,0.8), 0 0 40px rgba(0,255,255,0.4)'
+        }}>
+          &gt; {personalInfo?.name || 'GAURAV'}
         </h1>
-        
-        <p className="text-2xl md:text-3xl text-blue-400 mb-8 h-16 font-mono">
-          {text}
-          <span className="animate-pulse">|</span>
+
+        {/* Typing Effect */}
+        <div className="text-2xl md:text-4xl font-bold mb-8 h-16 flex items-center justify-center">
+          <span className="text-pink-400" style={{textShadow: '0 0 20px rgba(255,0,127,0.6)'}}>
+            {displayedText}
+            <span className="animate-pulse">|</span>
+          </span>
+        </div>
+
+        {/* Bio */}
+        <p className="text-cyan-300 text-lg md:text-xl max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+          {personalInfo?.bio || 'Building innovative solutions with React, Django, and cutting-edge technologies.'}
         </p>
 
-        <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-12">
-          Building dynamic, scalable web applications with modern technologies
-        </p>
+        {/* CTA Buttons */}
+        <div className="flex gap-6 justify-center flex-wrap mb-12">
+          <a href="#projects" className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-black font-bold uppercase tracking-widest transition-all duration-300 transform hover:scale-105"
+             style={{boxShadow: '0 0 20px rgba(0,255,255,0.8)'}}>
+            &gt; VIEW_WORK
+          </a>
+          <a href="#contact" className="px-8 py-3 border-2 border-pink-400 text-pink-400 hover:bg-pink-500/20 font-bold uppercase tracking-widest transition-all duration-300"
+             style={{boxShadow: '0 0 20px rgba(255,0,127,0.3)'}}>
+            &gt; GET_IN_TOUCH
+          </a>
+        </div>
 
-        <div className="flex gap-4 justify-center">
-          <button className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition">
-            View My Work
-          </button>
-          <button className="px-8 py-3 border-2 border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg font-semibold transition">
-            Contact Me
-          </button>
+        {/* Social Links with Real Icons */}
+        <div className="flex gap-6 justify-center mb-16">
+          <a href="https://github.com/Gaurav5791" target="_blank" rel="noopener noreferrer"
+             className="w-12 h-12 border-2 border-cyan-400 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-black transition-all"
+             style={{boxShadow: '0 0 10px rgba(0,255,255,0.5)'}}>
+            <FaGithub size={24} />
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+             className="w-12 h-12 border-2 border-cyan-400 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-black transition-all"
+             style={{boxShadow: '0 0 10px rgba(0,255,255,0.5)'}}>
+            <FaLinkedin size={24} />
+          </a>
+          <a href="mailto:gauravgtp614@gmail.com"
+             className="w-12 h-12 border-2 border-cyan-400 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-black transition-all"
+             style={{boxShadow: '0 0 10px rgba(0,255,255,0.5)'}}>
+            <FaEnvelope size={24} />
+          </a>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="animate-bounce">
+          <p className="text-cyan-400 font-mono text-sm">[ SCROLL_DOWN ]</p>
+          <p className="text-2xl">↓</p>
         </div>
       </div>
     </section>
