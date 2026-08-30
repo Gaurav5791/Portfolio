@@ -36,3 +36,20 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
+class Experience(models.Model):
+    EXPERIENCE_TYPE_CHOICES = [
+        ('internship', 'Internship'),
+        ('training', 'Training'),
+        ('work', 'Work'),
+        ('education', 'Education'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    company = models.CharField(max_length=200)
+    experience_type = models.CharField(max_length=20, choices=EXPERIENCE_TYPE_CHOICES)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    description = models.TextField()
+    
+    def __str__(self):
+        return f"{self.title} at {self.company}"    
