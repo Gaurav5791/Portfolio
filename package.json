@@ -2,8 +2,11 @@
   "name": "portfolio",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
-    "build": "npm run build --prefix=frontend",
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
     "dev": "npm run dev --prefix=frontend"
   }
 }
